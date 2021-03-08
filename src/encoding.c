@@ -12,7 +12,7 @@
 #ifdef ARDUINO
 #include "bc-shamir.h"
 #else
-#include "../bc-shamir/src/bc-shamir.h"
+#include "../deps/bc-shamir/src/bc-shamir.h"
 #endif
 
 #include <stdio.h>
