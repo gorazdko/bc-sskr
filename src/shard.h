@@ -11,7 +11,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-typedef struct sskr_shard_struct {
+typedef struct __attribute__((__packed__)) sskr_shard_struct {
     uint16_t identifier;
     size_t group_index;
     size_t group_threshold;

@@ -4,6 +4,14 @@
 #include "../src/bc-sskr.h"
 #include "test-utils.h"
 
+// Clearly not random. Only use for tests.
+void fake_random2(uint8_t *buf, size_t count, void* ctx) {
+
+  // TODO
+  memset(buf, 0, count);
+}
+
+
 static void test1() {
     // size_t group_threshold = 1;
     // sskr_group_descriptor groups[] = {{1, 1}};
@@ -34,14 +42,21 @@ static void test1() {
     printf("expected_shard_len %zu master_secret_len %zu METADATA_LENGTH_BYTES %zu\n", expected_shard_len, master_secret_len, METADATA_LENGTH_BYTES);
     size_t buffer_len = 20 * expected_shard_len;
     uint8_t output[buffer_len];
-    int shard_count = sskr_generate(group_threshold, groups, groups_len, master_secret, master_secret_len, &shard_len, output, buffer_len, NULL, fake_random);
+
+
+    printf("size_t size: %d \n", sizeof(size_t));
+    printf("sskr_group_descriptor size: %d \n", sizeof(sskr_group_descriptor));
+
+    int shard_count = sskr_generate(group_threshold, groups, groups_len, master_secret, master_secret_len, &shard_len, output, buffer_len, NULL, fake_random2);
+    
+
     printf("shard_count %zu expected_shard_count %zu\n", shard_count, expected_shard_count);
     assert(shard_count == expected_shard_count);
     printf("shard_len %zu expected_shard_len %zu\n", shard_len, expected_shard_len);
     assert(shard_len == expected_shard_len);
 
-    printf("%d\n", shard_count);
-    printf("%ld\n", shard_len);
+    printf("shard count: %d\n", shard_count);
+    printf("shard len: %ld\n", shard_len);
     for(int i = 0; i < shard_count; i++) {
         char* s = data_to_hex(&output[i * shard_len], shard_len);
         printf("%s\n", s);
@@ -54,7 +69,9 @@ static void test1() {
     }
     size_t result_master_secret_max_len = 100;
     uint8_t result_master_secret[result_master_secret_max_len];
+
     int result_master_secret_len = sskr_combine(&input[0], shard_len, input_indexes_len, result_master_secret, result_master_secret_max_len);
+
     assert(result_master_secret_len == master_secret_len);
     assert(equal_uint8_buffers(master_secret, master_secret_len, result_master_secret, result_master_secret_len));
 

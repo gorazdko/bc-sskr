@@ -10,6 +10,7 @@
 
 #include <stdlib.h>
 
+#pragma pack(1)
 typedef struct sskr_group_descriptor_struct {
     size_t threshold;
     size_t count;
