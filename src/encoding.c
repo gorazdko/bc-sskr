@@ -213,11 +213,13 @@ static int generate_shards(
 //////////////////////////////////////////////////
 // generate mnemonics
 //
+
+// ['number', 'array', 'number', /*'string'*/ 'number', 'number', 'number', 'number', 'number', 'number', 'number']
 int sskr_generate(
     size_t group_threshold,
     const sskr_group_descriptor *groups,
     size_t groups_len,
-    const uint8_t *master_secret,
+    const uint8_t *master_secret, 
     size_t master_secret_len,
     size_t *shard_len,
     uint8_t *output,

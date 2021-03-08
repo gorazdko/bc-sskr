@@ -41,10 +41,27 @@
 				['number', 'array', 'number'], // argument types
 			);
 
+			// https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html#calling-compiled-c-functions-from-javascript-using-ccall-cwrap
+
+			/*
+			int sskr_generate(
+			    size_t group_threshold,
+			    const sskr_group_descriptor *groups,
+			    size_t groups_len,
+			    const uint8_t *master_secret, 
+			    size_t master_secret_len,
+			    size_t *shard_len,
+			    uint8_t *output,
+			    size_t buffer_size,
+			    void* ctx,
+			    void (*random_generator)(uint8_t *, size_t, void*)
+			) {
+			*/
+
 			var sskrGenerate = Module.cwrap(
 				'sskr_generate', // name of C function
 				'number', // return type
-				['number', 'array', 'number', /*'string'*/ 'array', 'number', 'number', 'number', 'number', 'number', 'number'], // argument types
+				['number', 'array', 'number', /*'string'*/ 'string', 'number', 'number', 'number', 'number', 'number', 'number'], // argument types
 			);
 
 			var sskrCombine = Module.cwrap(
@@ -65,8 +82,28 @@
 
 			const groupThreshold = 2
 
+
 			const expectedShardCount = sskrShardCount(groupThreshold, groups, groups.length / 8)
 			console.log('expectedShardCount', expectedShardCount)
+
+
+			/// test
+
+
+			var e = new Uint32Array(4);
+			e[0] = 2;
+			e[1] = 3;
+			e[2] = 3;
+			e[3] = 5;
+			value = ccall("sskr_count_shards", "number", ["number", "array", "number"], [groupThreshold, e, /*e.length*/
+				4
+			]);
+			console.log('test: ', value);
+
+
+
+			// TEST END
+
 
 			const masterSecretString = '7daa851251002874e1a1995f0897e6b1'
 			const masterSecret = hexStringToUint8Array(masterSecretString)
@@ -94,6 +131,7 @@
 				output: output,
 				heap: outputHeap
 			} = allocateMemory(bufferLen)
+
 
 			const shardCount = sskrGenerate(
 				groupThreshold,
