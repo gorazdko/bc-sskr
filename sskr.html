@@ -94,7 +94,6 @@
 			} = allocateMemory(bufferLen)
 
 
-
 			const shardCount = sskrGenerate(
 				groupThreshold,
 				groups_,
@@ -138,6 +137,7 @@
 			console.log('--- SHARDS END ---')
 
 
+			// shards (in hex) to recover from 
 			const recovery = [
 				'00001101009be4050ec500e6e94ba77a399086359c',
 				'00001101016360e1b2bd00a5485d4ea9c221d6ef0c',
@@ -145,27 +145,24 @@
 				'0000111202e5a909d4af002692857bef8a59ca1ac9',
 				'00001112039ab54b2386004d477233a52ee00d26e8',
 			]
+
+			// Convert shards to binary format
 			var width = 21;
 			var height = 5;
-
 			// https://kapadia.github.io/emscripten/2013/09/13/emscripten-pointers-and-pointers.html
 			var data = new Uint8Array(height * width);
-
-
-			var p1
+			var _shard
 			var k = 0;
 			for (var j = 0; j < height; j++) {
-				p1 = hexStringToUint8Array(recovery[j]);
+				_shard = hexStringToUint8Array(recovery[j]);
 				for (var i = 0; i < width; i++) {
-					data[k] = p1[i];
+					data[k] = _shard[i];
 					k = k + 1
 				}
 			}
 
-
 			var nDataBytes = data.length * data.BYTES_PER_ELEMENT;
 			var dataPtr = Module._malloc(nDataBytes);
-
 
 			var dataHeap1 = new Uint8Array(Module.HEAPU8.buffer, dataPtr, nDataBytes);
 			dataHeap1.set(new Uint8Array(data.buffer));
@@ -184,13 +181,11 @@
 			pointerHeap.set(new Uint8Array(pointers.buffer));
 
 
-			// Should this be 100?
 			const {
 				output: recover,
 				heap: recoverHeap
 			} = allocateMemory(100)
 
-			// This doesn't work yet
 			const combineResult = sskrCombine(pointerHeap.byteOffset, width, height, recoverHeap.byteOffset, recover.length)
 			console.log('combineResult', combineResult)
 
