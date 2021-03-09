@@ -87,19 +87,10 @@
 			console.log('expectedShardCount', expectedShardCount)
 
 
-			/// test
-			console.log("moj")
-			//const groups_ = new Uint32Array(4);
 			const groups_ = new Uint8Array([2, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0, 5, 0, 0, 0]); // DELA
-			//const groups_ = Module._malloc(100);
 
-			//setValue(groups_ + 0, 2, 'i32')
-			//setValue(groups_ + 1, 3, 'i32')
-			//setValue(groups_ + 2, 3, 'i32')
-			//setValue(groups_ + 3, 5, 'i32')
 			var expectedShardCount_ = ccall("sskr_count_shards", "number", ["number", "array", "number"], [groupThreshold, groups_, /*groups_.length / 2*/ 2]);
 			console.log('test: ', expectedShardCount_);
-			// TEST END
 
 
 			const masterSecretString = '7daa851251002874e1a1995f0897e6b1'
@@ -130,29 +121,6 @@
 			} = allocateMemory(bufferLen)
 
 
-			// test
-
-
-			/*
-			int sskr_generate(
-			    size_t group_threshold,
-			    const sskr_group_descriptor *groups,
-			    size_t groups_len,
-			    const uint8_t *master_secret, 
-			    size_t master_secret_len,
-			    size_t *shard_len,
-			    uint8_t *output,
-			    size_t buffer_size,
-			    void* ctx,
-			    void (*random_generator)(uint8_t *, size_t, void*)
-			) {
-			*/
-
-			var shard_len = Module._malloc(4);
-			var buffer_len = 420 // TODO this valu was checke in CLI
-			var output_ = Module._malloc(buffer_len); // TODO!
-			//var output_ = new Uint8Array(buffer_len);
-
 
 			var master_secret_str_ = "7daa851251002874e1a1995f0897e6b1";
 
@@ -167,16 +135,12 @@
 			const shardCount = sskrGenerate(
 				groupThreshold,
 				groups_,
-				/*groups.length / 8*/
 				2,
-				//masterSecretString
 				rs,
-				/*masterSecretString.length / 2*/
 				16,
 				shardLenHeap.byteOffset,
 				outputHeap.byteOffset,
 				output.length,
-				/*undefined*/
 				null,
 				newFuncPtr
 			)
@@ -202,16 +166,6 @@
 			for (let x = 0; x < shardCount; x++) {
 				const pos = x * expectedShardLen
 				const slice = outputResult.slice(pos, pos + expectedShardLen)
-				// console.log(slice)
-
-				// const view = new DataView(slice.buffer)
-
-				// if (x === 0) {
-				//   for(let y = 0; y < expectedShardLen; y++) {
-				//     console.log(view.getUint8(y).toString(16))
-				//   }
-				// }
-
 
 				const shard = toHexString(slice)
 				shards.push(shard)
@@ -220,16 +174,6 @@
 			}
 			console.log('--- SHARDS END ---')
 
-			// this are results for identifier=0x0000. Checkd in console
-			/*
-						const recovery = [
-							'00001101009be4050ec500e6e94ba77a399086359c',
-							'00001101016360e1b2bd00a5485d4ea9c221d6ef0c',
-							'00001112017f1c42f729006bd5f7484aa4b9c73c21',
-							'0000111202e5a909d4af002692857bef8a59ca1ac9',
-							'00001112039ab54b2386004d477233a52ee00d26e8',
-						]
-			*/
 
 			const recovery = [
 				'00001101009be4050ec500e6e94ba77a399086359c',
@@ -252,14 +196,12 @@
 				for (var i = 0; i < width; i++) {
 					data[k] = p1[i];
 					k = k + 1
-					//const rs = fromHexString(shards[i]);
 				}
 			}
 
 
 			var nDataBytes = data.length * data.BYTES_PER_ELEMENT;
 			var dataPtr = Module._malloc(nDataBytes);
-
 
 
 			var dataHeap1 = new Uint8Array(Module.HEAPU8.buffer, dataPtr, nDataBytes);
@@ -279,53 +221,15 @@
 			pointerHeap.set(new Uint8Array(pointers.buffer));
 
 
-			//var a = new Uint8Array([0, 1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 4, 5, 6, 7, 1, 1, 1, 1, 1, 1, ]);
-			//pointerHeap.set(new Uint8Array([a, a, a, a, a, a]));
-
 			// Should this be 100?
 			const {
 				output: recover,
 				heap: recoverHeap
 			} = allocateMemory(100)
 
-
-			/// test2
-			//console.log("moj2")
-			//const groups_ = new Uint32Array(4);
-			//const groups_ = new Uint8Array([2, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0, 5, 0, 0, 0]); // DELA
-			//const groups_ = Module._malloc(100);
-
-			/*
-			int sskr_combine(
-			    const uint8_t **input_shards, // array of pointers to 10-bit words
-			    size_t shard_len,   // number of bytes in each serialized shard
-			    size_t shards_count,  // total number of shards
-			    uint8_t *buffer,            // working space, and place to return secret
-			    size_t buffer_len      // total amount of working space
-			*/
-
-
-
-			//var shards_ = new Uint8Array([1, 1, 1, 1, 1]);
-
-			const shards_ = Module._malloc(1000);
-
-			//setValue(shards_ + 0, 2, '*') setValue(shards_ + 1, 3, '*') setValue(shards_ + 2, 3, '*') setValue(shards_ + 3, 5, '*')
-
-
-			//var expectedShardCount_ = ccall("sskr_combine", "number", ["number", "number", "number", "number", "number"], [shards_, width, height, recoverHeap.byteOffset, recover.length]);
-			//console.log('test: ', expectedShardCount_);
-			// TEST2 END
-
-
-			//var shards_ = new Uint8Array(10000);
-
 			// This doesn't work yet
 			const combineResult = sskrCombine(pointerHeap.byteOffset, width, height, recoverHeap.byteOffset, recover.length)
 			console.log('combineResult', combineResult)
-
-			//var buffer_len = new Uint8Array(recoverHeap.buffer, recoverHeap.byteOffset, recover.length)[0];
-			//console.log('buffer_len', buffer_len)
 
 			var outputResult = new Uint8Array(recoverHeap.buffer, recoverHeap.byteOffset, combineResult);
 			console.log('outputResult', outputResult)
