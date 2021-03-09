@@ -324,11 +324,12 @@
 			const combineResult = sskrCombine(pointerHeap.byteOffset, width, height, recoverHeap.byteOffset, recover.length)
 			console.log('combineResult', combineResult)
 
-			var xy = new Uint8Array(recoverHeap.buffer, recoverHeap.byteOffset, recover.length)[0];
-			console.log('xy', xy)
+			//var buffer_len = new Uint8Array(recoverHeap.buffer, recoverHeap.byteOffset, recover.length)[0];
+			//console.log('buffer_len', buffer_len)
 
-			var outputResult = new Uint8Array(recoverHeap.buffer, recoverHeap.byteOffset, recover.length);
+			var outputResult = new Uint8Array(recoverHeap.buffer, recoverHeap.byteOffset, combineResult);
 			console.log('outputResult', outputResult)
+			console.log('recoverLen', recover.length)
 
 			function toHexString(byteArray) {
 				return Array.from(byteArray, function(byte) {
