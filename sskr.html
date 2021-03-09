@@ -61,7 +61,7 @@
 			var sskrGenerate = Module.cwrap(
 				'sskr_generate', // name of C function
 				'number', // return type
-				['number', 'array', 'number', /*'string'*/ 'string', 'number', 'number', 'number', 'number', 'number', 'number'], // argument types
+				['number', 'array', 'number', /*'string'*/ 'array', 'number', 'number', 'number', 'number', 'number', 'number'], // argument types
 			);
 
 			var sskrCombine = Module.cwrap(
@@ -93,7 +93,7 @@
 			setValue(groups_ + 1, 3, 'i32')
 			setValue(groups_ + 1, 3, 'i32')
 			setValue(groups_ + 1, 5, 'i32')
-			var expectedShardCount_ = ccall("sskr_count_shards", "number", ["number", "array", "number"], [groupThreshold, groups_, groups_.length / 2]);
+			var expectedShardCount_ = ccall("sskr_count_shards", "number", ["number", "array", "number"], [groupThreshold, groups_, /*groups_.length / 2*/ 2]);
 			console.log('test: ', expectedShardCount_);
 			// TEST END
 
@@ -149,22 +149,76 @@
 			//var output_ = Module._malloc(buffer_len); // TODO!
 			var output_ = new Uint8Array(buffer_len);
 
-			var ret = ccall("sskr_generate", "number", ["number", "array", "number", "array", "number", "number", "array", "number", "number", "number"],
-				[groupThreshold, groups_, 2, masterSecretString, 16 /*TODO!*/ , shard_len, output_, buffer_len, null, newFuncPtr]);
-			console.log("[shard count] ", ret);
+
+			var master_secret_str_ = "7daa851251002874e1a1995f0897e6b1";
+
+			const fromHexString = hexString =>
+				new Uint8Array(hexString.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+
+			const rs = fromHexString(master_secret_str_);
+
+			console.log("rall s", rs);
+
+			var msk = new Uint8Array(16);
+
+			for (i = 0; i < 16; i++) {
+
+				setValue(msk + i, rs[i], 'i8')
+				console.log("rs", getValue(msk + i, 'i8'));
+			}
+
+
+			var shar_count_ = ccall("sskr_generate", "number", ["number", "array", "number", "array", "number", "number", "array", "number", "number", "number"],
+				[groupThreshold, groups_, 2, msk, 16 /*TODO!*/ , shard_len, output_, buffer_len, null, newFuncPtr]);
+			console.log("[shard count] ", shar_count_);
+
+			console.log("[shard0] ", output_);
+			console.log("getvalue [shard0] ", getValue(output_, 'i32'));
+			console.log("getvalue [shard1] ", getValue(output_ + 1, 'i32'));
+			console.log("getvalue [shard2] ", getValue(output_ + 2, 'i8'));
+			console.log("getvalue [shard2] ", getValue(output_ + 10, 'i8'));
+			console.log("[shard0 hex] ", toHexString(output_));
+
+			console.log('--- [SHARDS START] ---')
+			const shards_ = []
+			for (let x = 0; x < shar_count_; x++) {
+				const pos = x * expectedShardLen
+				const slice = output_.slice(pos, pos + expectedShardLen)
+				// console.log(slice)
+
+				// const view = new DataView(slice.buffer)
+
+				// if (x === 0) {
+				//   for(let y = 0; y < expectedShardLen; y++) {
+				//     console.log(view.getUint8(y).toString(16))
+				//   }
+				// }
+
+
+				const shard = toHexString(slice)
+				shards_.push(shard)
+				// This doesn't seem to be a valid shard
+				console.log(shard)
+			}
+			console.log('--- SHARDS END ---')
+
 			// TEST end
 
 
 			const shardCount = sskrGenerate(
 				groupThreshold,
-				groups,
-				groups.length / 8,
-				masterSecretString,
-				masterSecretString.length / 2,
+				groups_,
+				/*groups.length / 8*/
+				2,
+				//masterSecretString
+				msk,
+				/*masterSecretString.length / 2*/
+				16,
 				shardLenHeap.byteOffset,
 				outputHeap.byteOffset,
 				output.length,
-				undefined,
+				/*undefined*/
+				null,
 				newFuncPtr
 			)
 

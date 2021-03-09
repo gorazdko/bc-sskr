@@ -1831,6 +1831,55 @@ var ASM_CONSTS = {
       err('Failed to grow the heap from ' + oldSize + ' bytes to ' + newSize + ' bytes, not enough memory!');
       return false;
     }
+
+  function flush_NO_FILESYSTEM() {
+      // flush anything remaining in the buffers during shutdown
+      if (typeof _fflush !== 'undefined') _fflush(0);
+      var buffers = SYSCALLS.buffers;
+      if (buffers[1].length) SYSCALLS.printChar(1, 10);
+      if (buffers[2].length) SYSCALLS.printChar(2, 10);
+    }
+  
+  var SYSCALLS={mappings:{},buffers:[null,[],[]],printChar:function(stream, curr) {
+        var buffer = SYSCALLS.buffers[stream];
+        assert(buffer);
+        if (curr === 0 || curr === 10) {
+          (stream === 1 ? out : err)(UTF8ArrayToString(buffer, 0));
+          buffer.length = 0;
+        } else {
+          buffer.push(curr);
+        }
+      },varargs:undefined,get:function() {
+        assert(SYSCALLS.varargs != undefined);
+        SYSCALLS.varargs += 4;
+        var ret = HEAP32[(((SYSCALLS.varargs)-(4))>>2)];
+        return ret;
+      },getStr:function(ptr) {
+        var ret = UTF8ToString(ptr);
+        return ret;
+      },get64:function(low, high) {
+        if (low >= 0) assert(high === 0);
+        else assert(high === -1);
+        return low;
+      }};
+  function _fd_write(fd, iov, iovcnt, pnum) {
+      // hack to support printf in SYSCALLS_REQUIRE_FILESYSTEM=0
+      var num = 0;
+      for (var i = 0; i < iovcnt; i++) {
+        var ptr = HEAP32[(((iov)+(i*8))>>2)];
+        var len = HEAP32[(((iov)+(i*8 + 4))>>2)];
+        for (var j = 0; j < len; j++) {
+          SYSCALLS.printChar(fd, HEAPU8[ptr+j]);
+        }
+        num += len;
+      }
+      HEAP32[((pnum)>>2)] = num
+      return 0;
+    }
+
+  function _setTempRet0($i) {
+      setTempRet0(($i) | 0);
+    }
 var ASSERTIONS = true;
 
 
@@ -1862,7 +1911,9 @@ function intArrayToString(array) {
 
 var asmLibraryArg = {
   "emscripten_memcpy_big": _emscripten_memcpy_big,
-  "emscripten_resize_heap": _emscripten_resize_heap
+  "emscripten_resize_heap": _emscripten_resize_heap,
+  "fd_write": _fd_write,
+  "setTempRet0": _setTempRet0
 };
 var asm = createWasm();
 /** @type {function(...*):?} */
@@ -1909,6 +1960,9 @@ var _emscripten_stack_get_end = Module["_emscripten_stack_get_end"] = function()
 
 /** @type {function(...*):?} */
 var _malloc = Module["_malloc"] = createExportWrapper("malloc");
+
+/** @type {function(...*):?} */
+var dynCall_jiji = Module["dynCall_jiji"] = createExportWrapper("dynCall_jiji");
 
 
 
@@ -2233,7 +2287,7 @@ function checkUnflushedContent() {
     has = true;
   }
   try { // it doesn't matter if it fails
-    var flush = null;
+    var flush = flush_NO_FILESYSTEM;
     if (flush) flush();
   } catch(e) {}
   out = oldOut;

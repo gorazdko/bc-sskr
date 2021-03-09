@@ -27,10 +27,13 @@ static void test1() {
 
     size_t group_threshold = 2;
     sskr_group_descriptor groups[] = {{2, 3}, {3, 5}};
+
+
     size_t groups_len = 2;
     size_t input_indexes[] = {1, 2, 3, 5, 6};
     size_t input_indexes_len = 5;
     size_t expected_shard_count = sskr_count_shards(group_threshold, groups, groups_len);
+
 
     char* master_secret_str = "7daa851251002874e1a1995f0897e6b1";
     uint8_t* master_secret;

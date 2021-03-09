@@ -104,8 +104,12 @@ int sskr_count_shards(
     const sskr_group_descriptor *groups,
     size_t groups_len
 ) {
-    // printf("%zu\n", group_threshold);
-    // printf("%zu\n", groups_len);
+
+     printf("[**count chard] \n");
+     printf("_[IN]groups[1] %zu\n", (&groups->threshold)[0]);
+     printf("_[IN]groups[2] %zu\n", (&groups->threshold)[1]);
+     printf("_[IN]groups[3] %zu\n", (&groups->threshold)[2]);
+     printf("_[IN]groups[4] %zu\n", (&groups->threshold)[3]);
 
     size_t shard_count = 0;
 
@@ -227,11 +231,26 @@ int sskr_generate(
     void* ctx,
     void (*random_generator)(uint8_t *, size_t, void*)
 ) {
-    // printf("sskr_generate\n");
+      printf("[bc_sskr] sskr_generate\n");
 
-    // printf("group_threshold %zu\n", group_threshold);
-    // printf("groups_len %zu\n", groups_len);
-    // printf("master_secret_len %zu\n", master_secret_len);
+     printf("_[IN]groups[0] %zu\n", (&groups->threshold)[0]);
+     printf("_[IN]groups[0] %zu\n", (&groups->threshold)[1]);
+     printf("_[IN]groups[0] %zu\n", (&groups->threshold)[2]);
+     printf("_[IN]groups[0] %zu\n", (&groups->threshold)[3]);
+
+
+     printf("group_threshold %zu\n", group_threshold);
+     printf("groups_len %zu\n", groups_len);
+
+
+
+     printf("master_secret_len %zu\n  *********master_secret: \n", master_secret_len);
+
+    for (int i=0; i < master_secret_len; i++) {
+        printf("%02x", master_secret[i]);
+    }
+
+    printf("\n");
 
     if(master_secret_len < MIN_STRENGTH_BYTES) {
         return ERROR_SECRET_TOO_SHORT;
