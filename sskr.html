@@ -163,17 +163,10 @@
 
 			console.log("rall s", rs);
 
-			var msk = new Uint8Array(16);
-
-			for (i = 0; i < 16; i++) {
-
-				setValue(msk + i, rs[i], 'i8')
-				console.log("rs", getValue(msk + i, 'i8'));
-			}
 
 			console.log("call sskr_generate");
 			var shar_count_ = ccall("sskr_generate", "number", ["number", "array", "number", "array", "number", "number", "array", "number", "number", "number"],
-				[groupThreshold, groups_, 2, msk, 16 /*TODO!*/ , shard_len, output_, buffer_len, null, newFuncPtr]);
+				[groupThreshold, groups_, 2, rs, 16 /*TODO!*/ , shard_len, output_, buffer_len, null, newFuncPtr]);
 			console.log("[shard count] ", shar_count_);
 
 			console.log("[shard0] ", output_);
@@ -215,7 +208,7 @@
 				/*groups.length / 8*/
 				2,
 				//masterSecretString
-				msk,
+				rs,
 				/*masterSecretString.length / 2*/
 				16,
 				shardLenHeap.byteOffset,
