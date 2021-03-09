@@ -43,21 +43,6 @@
 
 			// https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html#calling-compiled-c-functions-from-javascript-using-ccall-cwrap
 
-			/*
-			int sskr_generate(
-			    size_t group_threshold,
-			    const sskr_group_descriptor *groups,
-			    size_t groups_len,
-			    const uint8_t *master_secret, 
-			    size_t master_secret_len,
-			    size_t *shard_len,
-			    uint8_t *output,
-			    size_t buffer_size,
-			    void* ctx,
-			    void (*random_generator)(uint8_t *, size_t, void*)
-			) {
-			*/
-
 			var sskrGenerate = Module.cwrap(
 				'sskr_generate', // name of C function
 				'number', // return type
@@ -70,27 +55,13 @@
 				['number', 'number', 'number', 'number', 'number'], // argument types
 			);
 
-			const groups = new Uint16Array(16)
-			const view = new DataView(groups.buffer)
-			view.setUint16(0, 2, true)
-			view.setUint16(8, 3, true)
-			view.setUint16(16, 3, true)
-			view.setUint16(24, 5, true)
-			console.log('groups', groups)
-			const buffer = Module._malloc(groups.length);
-			Module.HEAPU16.set(groups, buffer);
 
 			const groupThreshold = 2
 
-
-			const expectedShardCount = sskrShardCount(groupThreshold, groups, groups.length / 8)
-			console.log('expectedShardCount', expectedShardCount)
-
-
 			const groups_ = new Uint8Array([2, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0, 5, 0, 0, 0]); // DELA
 
-			var expectedShardCount_ = ccall("sskr_count_shards", "number", ["number", "array", "number"], [groupThreshold, groups_, /*groups_.length / 2*/ 2]);
-			console.log('test: ', expectedShardCount_);
+			var expectedShardCount = ccall("sskr_count_shards", "number", ["number", "array", "number"], [groupThreshold, groups_, /*groups_.length / 2*/ 2]);
+			console.log('test: ', expectedShardCount);
 
 
 			const masterSecretString = '7daa851251002874e1a1995f0897e6b1'
