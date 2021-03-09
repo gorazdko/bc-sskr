@@ -258,9 +258,33 @@
 				heap: recoverHeap
 			} = allocateMemory(100)
 
+
+			/// test2
+			//console.log("moj2")
+			//const groups_ = new Uint32Array(4);
+			//const groups_ = new Uint8Array([2, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0, 5, 0, 0, 0]); // DELA
+			//const groups_ = Module._malloc(100);
+
+			/*
+			int sskr_combine(
+			    const uint8_t **input_shards, // array of pointers to 10-bit words
+			    size_t shard_len,   // number of bytes in each serialized shard
+			    size_t shards_count,  // total number of shards
+			    uint8_t *buffer,            // working space, and place to return secret
+			    size_t buffer_len      // total amount of working space
+			*/
+			//var expectedShardCount_ = ccall("sskr_combine", "number", ["array", "number", "number", "array", "number"], [groupThreshold, groups_, /*groups_.length / 2*/ 2]);
+			//console.log('test: ', expectedShardCount_);
+			// TEST2 END
+
+
+
 			// This doesn't work yet
 			const combineResult = sskrCombine(pointerHeap.byteOffset, width, height, recoverHeap.byteOffset, recover.length)
 			console.log('combineResult', combineResult)
+
+
+
 		}, 1000)
 	</script>
 </body>

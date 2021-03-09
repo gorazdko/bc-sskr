@@ -503,7 +503,7 @@ int sskr_combine(
 
     for (int i = 0; i < shards_count; i++) {
 	for (int j=0; j < shard_len; j++) {
-          printf("%02x", input_shards[i][j]);
+          printf("%d", input_shards[i][j]);
         }
         printf("\n");
     }
