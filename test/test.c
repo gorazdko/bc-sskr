@@ -47,6 +47,8 @@ static void test1() {
     printf("size_t size: %d \n", sizeof(size_t));
     printf("sskr_group_descriptor size: %d \n", sizeof(sskr_group_descriptor));
 
+    printf("buffer len: %d \n", buffer_len);
+
     int shard_count = sskr_generate(group_threshold, groups, groups_len, master_secret, master_secret_len, &shard_len, output, buffer_len, NULL, fake_random2);
     
 
