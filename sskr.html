@@ -238,9 +238,9 @@
 
 			var p1
 			var k = 0;
-			for (var j = 0; j < 5; j++) {
+			for (var j = 0; j < height; j++) {
 				p1 = fromHexString(recovery[j]);
-				for (var i = 0; i < width * height; i++) {
+				for (var i = 0; i < width; i++) {
 					data[k] = p1[i];
 					k = k + 1
 					//const rs = fromHexString(shards[i]);
