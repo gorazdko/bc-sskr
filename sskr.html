@@ -234,8 +234,18 @@
 
 			// https://kapadia.github.io/emscripten/2013/09/13/emscripten-pointers-and-pointers.html
 			var data = new Uint8Array(height * width);
+
+
+			for (var i = 0; i < width * height; i++) {
+				data[i] = i;
+			}
+
+
 			var nDataBytes = data.length * data.BYTES_PER_ELEMENT;
 			var dataPtr = Module._malloc(nDataBytes);
+
+
+
 			var dataHeap1 = new Uint8Array(Module.HEAPU8.buffer, dataPtr, nDataBytes);
 			dataHeap1.set(new Uint8Array(data.buffer));
 
@@ -251,6 +261,10 @@
 			// Copy array of pointers to Emscripten heap
 			var pointerHeap = new Uint8Array(Module.HEAPU8.buffer, pointerPtr, nPointerBytes);
 			pointerHeap.set(new Uint8Array(pointers.buffer));
+
+
+			//var a = new Uint8Array([0, 1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 4, 5, 6, 7, 1, 1, 1, 1, 1, 1, ]);
+			//pointerHeap.set(new Uint8Array([a, a, a, a, a, a]));
 
 			// Should this be 100?
 			const {
@@ -273,11 +287,22 @@
 			    uint8_t *buffer,            // working space, and place to return secret
 			    size_t buffer_len      // total amount of working space
 			*/
-			//var expectedShardCount_ = ccall("sskr_combine", "number", ["array", "number", "number", "array", "number"], [groupThreshold, groups_, /*groups_.length / 2*/ 2]);
+
+
+
+			//var shards_ = new Uint8Array([1, 1, 1, 1, 1]);
+
+			const shards_ = Module._malloc(1000);
+
+			//setValue(shards_ + 0, 2, '*') setValue(shards_ + 1, 3, '*') setValue(shards_ + 2, 3, '*') setValue(shards_ + 3, 5, '*')
+
+
+			//var expectedShardCount_ = ccall("sskr_combine", "number", ["number", "number", "number", "number", "number"], [shards_, width, height, recoverHeap.byteOffset, recover.length]);
 			//console.log('test: ', expectedShardCount_);
 			// TEST2 END
 
 
+			//var shards_ = new Uint8Array(10000);
 
 			// This doesn't work yet
 			const combineResult = sskrCombine(pointerHeap.byteOffset, width, height, recoverHeap.byteOffset, recover.length)
