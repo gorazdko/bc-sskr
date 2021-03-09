@@ -190,16 +190,7 @@
 			console.log('combineResult', combineResult)
 
 			var outputResult = new Uint8Array(recoverHeap.buffer, recoverHeap.byteOffset, combineResult);
-			console.log('outputResult', outputResult)
-			console.log('recoverLen', recover.length)
-
-			function toHexString(byteArray) {
-				return Array.from(byteArray, function(byte) {
-					return ('0' + (byte & 0xFF).toString(16)).slice(-2);
-				}).join('')
-			}
-
-			console.log('outputResult hex', toHexString(outputResult))
+			console.log('Restored seed: ', toHexString(outputResult))
 
 
 		}, 1000)
