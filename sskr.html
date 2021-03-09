@@ -236,8 +236,15 @@
 			var data = new Uint8Array(height * width);
 
 
-			for (var i = 0; i < width * height; i++) {
-				data[i] = i;
+			var p1
+			var k = 0;
+			for (var j = 0; j < 5; j++) {
+				p1 = fromHexString(recovery[j]);
+				for (var i = 0; i < width * height; i++) {
+					data[k] = p1[i];
+					k = k + 1
+					//const rs = fromHexString(shards[i]);
+				}
 			}
 
 
