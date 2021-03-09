@@ -60,6 +60,7 @@
 
 			const groupThreshold = 2
 
+			// TODO: document big endian, size_t vs uint32_t
 			const groups_ = new Uint8Array([2, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0, 5, 0, 0, 0]); // DELA
 
 			var expectedShardCount = ccall("sskr_count_shards", "number", ["number", "array", "number"], [groupThreshold, groups_, /*groups_.length / 2*/ 2]);
@@ -131,7 +132,6 @@
 
 				const shard = toHexString(slice)
 				shards.push(shard)
-				// This doesn't seem to be a valid shard
 				console.log(shard)
 			}
 			console.log('--- SHARDS END ---')
@@ -191,7 +191,6 @@
 
 			var outputResult = new Uint8Array(recoverHeap.buffer, recoverHeap.byteOffset, combineResult);
 			console.log('Restored seed: ', toHexString(outputResult))
-
 
 		}, 1000)
 	</script>
