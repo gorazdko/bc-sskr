@@ -221,6 +221,16 @@
 			console.log('--- SHARDS END ---')
 
 			// this are results for identifier=0x0000. Checkd in console
+			/*
+						const recovery = [
+							'00001101009be4050ec500e6e94ba77a399086359c',
+							'00001101016360e1b2bd00a5485d4ea9c221d6ef0c',
+							'00001112017f1c42f729006bd5f7484aa4b9c73c21',
+							'0000111202e5a909d4af002692857bef8a59ca1ac9',
+							'00001112039ab54b2386004d477233a52ee00d26e8',
+						]
+			*/
+
 			const recovery = [
 				'00001101009be4050ec500e6e94ba77a399086359c',
 				'00001101016360e1b2bd00a5485d4ea9c221d6ef0c',
@@ -228,7 +238,6 @@
 				'0000111202e5a909d4af002692857bef8a59ca1ac9',
 				'00001112039ab54b2386004d477233a52ee00d26e8',
 			]
-
 			var width = 21;
 			var height = 5;
 
@@ -315,6 +324,19 @@
 			const combineResult = sskrCombine(pointerHeap.byteOffset, width, height, recoverHeap.byteOffset, recover.length)
 			console.log('combineResult', combineResult)
 
+			var xy = new Uint8Array(recoverHeap.buffer, recoverHeap.byteOffset, recover.length)[0];
+			console.log('xy', xy)
+
+			var outputResult = new Uint8Array(recoverHeap.buffer, recoverHeap.byteOffset, recover.length);
+			console.log('outputResult', outputResult)
+
+			function toHexString(byteArray) {
+				return Array.from(byteArray, function(byte) {
+					return ('0' + (byte & 0xFF).toString(16)).slice(-2);
+				}).join('')
+			}
+
+			console.log('outputResult hex', toHexString(outputResult))
 
 
 		}, 1000)
