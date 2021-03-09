@@ -233,10 +233,12 @@ int sskr_generate(
 ) {
       printf("[bc_sskr] sskr_generate\n");
 
-     printf("_[IN]groups[0] %zu\n", (&groups->threshold)[0]);
-     printf("_[IN]groups[0] %zu\n", (&groups->threshold)[1]);
-     printf("_[IN]groups[0] %zu\n", (&groups->threshold)[2]);
-     printf("_[IN]groups[0] %zu\n", (&groups->threshold)[3]);
+    printf("threshold %zu\n", groups->threshold);
+
+     printf("[IN]groups[1] %zu\n", (&groups->threshold)[0]);
+     printf("[IN]groups[2] %zu\n", (&groups->threshold)[1]);
+     printf("[IN]groups[3] %zu\n", (&groups->threshold)[2]);
+     printf("[IN]groups[4] %zu\n", (&groups->threshold)[3]);
 
 
      printf("group_threshold %zu\n", group_threshold);
