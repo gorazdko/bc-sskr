@@ -495,11 +495,18 @@ int sskr_combine(
     uint8_t *buffer,            // working space, and place to return secret
     size_t buffer_len      // total amount of working space
 ) {
-    // printf("\nsskr_combine\n");
-    // printf("shard_len %zu\n", shard_len);
-    // printf("shards_count %zu\n", shards_count);
+     printf("\nsskr_combine\n");
+     printf("shard_len %zu\n", shard_len);
+     printf("shards_count %zu\n", shards_count);
     // printf("buffer %s\n", buffer);
-    // printf("buffer_len %zu\n", buffer_len);
+     printf("buffer_len %zu\n", buffer_len);
+
+    for (int i = 0; i < shards_count; i++) {
+	for (int j=0; j < shard_len; j++) {
+          printf("%02x", input_shards[i][j]);
+        }
+        printf("\n");
+    }
 
     int result = 0;
 

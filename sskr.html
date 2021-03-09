@@ -164,46 +164,6 @@
 			console.log("rall s", rs);
 
 
-			console.log("call sskr_generate");
-			var shar_count_ = ccall("sskr_generate", "number", ["number", "array", "number", "array", "number", "number", "number", "number", "number", "number"],
-				[groupThreshold, groups_, 2, rs, 16 /*TODO!*/ , shard_len, output_, buffer_len, null, newFuncPtr]);
-			console.log("[shard count] ", shar_count_);
-
-			console.log("+++++[shard0] ", output_);
-			console.log("getvalue [shard0] ", getValue(output_, 'i8'));
-			console.log("getvalue [shard1] ", getValue(output_ + 1, 'i8'));
-			console.log("getvalue [shard2] ", getValue(output_ + 2, 'i8'));
-			console.log("getvalue [shard5] ", getValue(output_ + 15, 'i8'));
-			//console.log("[shard0 hex] ", toHexString(output_));
-
-
-			/*
-						console.log('--- [SHARDS START] ---')
-						const shards_ = []
-						for (let x = 0; x < shar_count_; x++) {
-							const pos = x * expectedShardLen
-							const slice = output_.slice(pos, pos + expectedShardLen)
-							// console.log(slice)
-
-							// const view = new DataView(slice.buffer)
-
-							// if (x === 0) {
-							//   for(let y = 0; y < expectedShardLen; y++) {
-							//     console.log(view.getUint8(y).toString(16))
-							//   }
-							// }
-
-
-							const shard = toHexString(slice)
-							shards_.push(shard)
-							// This doesn't seem to be a valid shard
-							console.log(shard)
-						}
-						console.log('--- SHARDS END ---')
-			*/
-			// TEST end
-
-
 			const shardCount = sskrGenerate(
 				groupThreshold,
 				groups_,
